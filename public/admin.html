@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+</head>
+<body>
+  <div id="navbar"></div>
+  <h1>Panel de Administración</h1>
+
+  <div style="border:1px solid #ccc; padding:10px; margin-bottom: 20px;">
+    <h3>Crear Producto</h3>
+    <label>Nombre: <input type="text" id="prodName"></label><br>
+    <label>Precio: <input type="number" id="prodPrice"></label><br>
+    <label>Stock: <input type="number" id="prodStock"></label><br>
+    <button id="btnCreateProduct">Crear Producto</button>
+  </div>
+
+  <div style="border:1px solid #ccc; padding:10px; margin-bottom: 20px;">
+    <h3>Editar Producto</h3>
+    <label>Selecciona Producto: 
+      <select id="productSelect"></select>
+    </label><br>
+    <label>Nombre: <input type="text" id="editProdName"></label><br>
+    <label>Precio: <input type="number" id="editProdPrice"></label><br>
+    <label>Stock: <input type="number" id="editProdStock"></label><br>
+    <button id="btnUpdateProduct">Actualizar Producto</button>
+  </div>
+
+  <div style="border:1px solid #ccc; padding:10px; margin-bottom: 20px;">
+    <h3>Productos Comprados</h3>
+    <div id="purchasedProducts"></div>
+  </div>
+
+  <div id="adminResult"></div>
+
+  <script type="module" src="./js/admin.js"></script>
+  <script type="module" src="./js/navbar.js"></script>
+</body>
+</html>

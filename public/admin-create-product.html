@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Producto</title>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <h1>Crear Producto</h1>
+  <div style="border: 1px solid #ccc; padding: 10px;">
+    <label>Nombre: <input type="text" id="prodName"></label><br>
+    <label>Precio: <input type="number" id="prodPrice"></label><br>
+    <label>Stock: <input type="number" id="prodStock"></label><br>
+    <label>Imagen: <input type="file" id="prodImage"></label><br>
+    <label>Estado:
+        <select id="prodStatus">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+    </label>
+    <button id="btnCreateProduct">Crear Producto</button>
+  </div>
+
+  <div id="adminResult"></div>
+
+  <script type="module" src="./js/admin-create-product.js"></script>
+  <script type="module" src="./js/navbar.js"></script>
+</body>
+</html>

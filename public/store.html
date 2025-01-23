@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tienda | Vapes</title>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <h1>Tienda de Vapes</h1>
+  
+  <!-- Lista de productos -->
+  <div id="productsList" style="display: flex; flex-wrap: wrap; gap: 20px;"></div>
+  
+  <!-- Mensajes de resultados -->
+  <div id="result"></div>
+
+  <!-- Modal para el carrito -->
+  <div id="cartModal" style="display: none; position: fixed; top: 10%; left: 10%; width: 80%; background-color: white; border: 1px solid black; padding: 20px;">
+    <h2>Mi Carrito</h2>
+    <div id="cartItems"></div>
+    <button id="btnCheckout">Ir al carrito</button>
+    <button id="btnCloseModal">Cerrar</button>
+  </div>
+
+  <!-- Botón para mostrar el carrito -->
+  <button id="btnShowCart">Ver Carrito</button>
+
+  <!-- Scripts -->
+  <script type="module" src="./js/store.js"></script>
+  <script type="module" src="./js/navbar.js"></script>
+
+</body>
+</html>

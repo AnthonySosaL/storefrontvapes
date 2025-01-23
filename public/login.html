@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Tienda Vapes</title>
+</head>
+<body>
+  <div id="navbar"></div>
+  
+  <h1>Página de Login</h1>
+  
+  <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+    <h3>Iniciar Sesión</h3>
+    <label>Email: <input type="email" id="loginEmail"></label><br>
+    <label>Password: <input type="password" id="loginPass"></label><br>
+    <button id="btnLogin">Login</button>
+  </div>
+
+  <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+    <h3>Crear Cuenta (User)</h3>
+    <label>Email: <input type="email" id="signupEmail"></label><br>
+    <label>Password: <input type="password" id="signupPass"></label><br>
+    <button id="btnSignupUser">Crear User</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script type="module">
+    import { loadNavbar } from "./js/navbarLoader.js";
+    loadNavbar();
+  </script>
+
+  <script type="module" src="./js/login.js"></script>
+  <script type="module" src="./js/navbar.js"></script>
+
+</body>
+</html>

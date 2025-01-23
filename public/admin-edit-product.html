@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Producto</title>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <h1>Editar Producto</h1>
+  <div style="border: 1px solid #ccc; padding: 10px;">
+    <label>Seleccionar Producto:
+      <select id="productSelect">
+        <option value="">Cargando productos...</option>
+      </select>
+    </label>
+    <br>
+    <label>Nombre: <input type="text" id="editProdName"></label><br>
+    <label>Precio: <input type="number" id="editProdPrice"></label><br>
+    <label>Stock: <input type="number" id="editProdStock"></label><br>
+    <label>Imagen actual:</label><br>
+    <img id="currentImage" src="" alt="Imagen actual" style="max-width: 200px;"><br>
+    <label>Subir nueva imagen: <input type="file" id="editProdImage"></label><br>
+    <label>Estado:
+        <select id="editProdStatus">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+    </label>
+
+      
+    <button id="btnUpdateProduct">Actualizar Producto</button>
+  </div>
+
+  <div id="adminResult"></div>
+
+  <script type="module" src="./js/admin-edit-product.js"></script>
+  <script type="module" src="./js/navbar.js"></script>
+</body>
+</html>
