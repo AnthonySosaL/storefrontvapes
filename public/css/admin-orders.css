@@ -1,0 +1,227 @@
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --pink-secondary: #FF99CC;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30;
+    --bg-gradient-2: #1A0A2F;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    min-width: 300px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+.orders-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 100px auto 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.orders-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--purple-primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(186, 85, 211, 0.3);
+}
+
+.table-responsive {
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 400px;
+    width: 100%;
+}
+
+.orders-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    table-layout: auto;
+}
+
+.orders-table thead {
+    background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 0.8rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.orders-table th {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Productos en columna */
+.orders-table td:nth-child(2) { /* Aplica solo a la columna de productos */
+    text-align: left;
+    white-space: pre-line; /* Mantener productos en línea separados */
+}
+
+/* Fecha que colapse más rápido */
+.orders-table td:nth-child(4), /* Columna de fecha */
+.orders-table th:nth-child(4) { /* Encabezado de fecha */
+    max-width: 150px; /* Sin límite de ancho */
+    overflow: visible; /* Mostrar el contenido completo */
+    white-space: normal; /* Permitir saltos de línea */
+    word-wrap: break-word; /* Ajustar texto a nuevas líneas */
+    word-break: break-word; /* Romper palabras largas si es necesario */
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+.status-badge.comprado {
+    background: var(--pink-primary);
+    color: #8b0000;
+}
+
+.status-badge.enviado {
+    background: var(--purple-secondary);
+    color: white;
+}
+
+.status-badge.entregado {
+    background: green;
+    color: white;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.modal-content {
+    border: 2px solid var(--purple-primary);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background-color: #fff; /* Fondo blanco para destacar */
+}
+
+/* Cambiar el color del botón de cierre en el modal */
+.modal-content .btn-close {
+    filter: invert(39%) sepia(80%) saturate(735%) hue-rotate(255deg) brightness(100%) contrast(100%);
+    transition: filter 0.3s ease;
+}
+
+/* Cambiar el color del hover en el botón de cierre */
+.modal-content .btn-close:hover {
+    filter: invert(50%) sepia(96%) saturate(546%) hue-rotate(275deg) brightness(105%) contrast(90%);
+}
+
+/* Cambiar el color del texto del título del modal */
+.modal-content .modal-title {
+    color: var(--purple-primary);
+    font-weight: bold;
+    font-size: 1.5rem; /* Tamaño del título */
+    text-align: center;
+}
+.modal-footer .btn-primary {
+    background-color: var(--purple-primary);
+    border: none;
+    transition: all 0.3s ease;
+}
+/* Media Queries */
+@media (max-width: 992px) {
+    .orders-container {
+        width: 95%;
+        max-width: 800px;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .orders-container {
+        width: 95%;
+        max-width: 600px;
+        padding: 1.5rem;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.5rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .orders-container {
+        width: 95%;
+        max-width: 400px;
+        padding: 1rem;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.2rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,323 @@
+/* cart.css */
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30;
+    --bg-gradient-2: #1A0A2F;
+}
+  
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    min-width: 300px; /* Reducido para permitir tamaños menores */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+/* Botones morados para aumentar y disminuir cantidad */
+.btn-purple {
+    background-color: #6f42c1 !important; /* Morado oscuro */
+    border-color: #6f42c1 !important;
+    color: white !important;
+}
+
+.btn-purple:hover {
+    background-color: #5a32a3 !important; /* Un poco más oscuro */
+    border-color: #5a32a3 !important;
+}
+
+/* Botones "Ir al carrito" y "Cerrar" en Lavender Purple (#9370DB) */
+.btn-purple-light {
+    background-color: #9370DB !important; /* Lavender Purple */
+    border-color: #9370DB !important;
+    color: white !important;
+}
+
+.btn-purple-light:hover {
+    background-color: #7A5BB6 !important; /* Un tono más oscuro al pasar el mouse */
+    border-color: #7A5BB6 !important;
+}
+  
+
+.cart-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 120px auto 0;
+    padding: 2rem;
+    background: #F698FC; /* Fondo rosa actualizado */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--purple-primary); /* Borde morado principal */
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 100px auto auto; /* Imagen, contenido, y controles */
+    gap: 1rem; /* Espaciado entre columnas */
+    align-items: center; /* Alinea verticalmente */
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--purple-secondary); /* Borde morado secundario */
+    border-radius: 8px;
+    background-color: var(--text-light); /* Fondo blanco */
+    transition: box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+    box-shadow: 0 5px 15px rgba(145, 102, 185, 0.2); /* Sombra suave en hover */
+}
+
+.cart-item-img {
+    margin-left: 20px; /* Aumenta este valor para más espaciado */
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--purple-primary); /* Borde morado */
+}
+
+.cart-item-content {
+    margin-left: 40px; /* Aumenta este valor para más espaciado */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cart-item-name {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--purple-primary); /* Texto morado */
+}
+
+.cart-item-price {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--purple-secondary); /* Texto morado secundario */
+}
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea los controles a la derecha */
+    gap: 0.5rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem; /* Espaciado entre botones y el input */
+    margin-right: 20px; /* Aumenta este valor para más espacio a la derecha */
+}
+
+.cart-item-quantity {
+    width: 50px; /* Tamaño compacto del input */
+    text-align: center;
+    border: 1px solid var(--purple-secondary); /* Borde morado */
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.btn-quantity {
+    width: 30px;
+    height: 30px;
+    background-color: var(--purple-primary); /* Fondo morado */
+    color: var(--text-light); /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-quantity:hover {
+    background-color: var(--purple-secondary); /* Morado más claro en hover */
+}
+
+.btn-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #F698FC; /* Fondo rosa actualizado */
+    color: var(--text-light); /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 20px; /* Aumenta este valor para más espacio a la derecha */
+}
+
+.btn-icon:hover {
+    background-color: var(--pink-secondary); /* Fondo rosa secundario en hover */
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between; /* Título a la izquierda, botones a la derecha */
+    align-items: center; /* Alinear verticalmente los botones con el título */
+    margin-bottom: 1rem; /* Espaciado debajo del header */
+}
+
+.cart-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white; /* Texto morado */
+}
+
+.cart-actions {
+    display: flex;
+    gap: 0.5rem; /* Espaciado entre los botones */
+}
+
+.cart-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cart-actions .btn-primary {
+    background-color: var(--purple-primary); /* Fondo morado */
+    border: none;
+    color: var(--text-light); /* Texto blanco */
+}
+
+.cart-actions .btn-primary:hover {
+    background-color: var(--purple-secondary); /* Hover morado secundario */
+}
+
+.cart-actions .btn-danger {
+    background-color: var(--purple-secondary); /* Morado más suave */
+    border: none;
+    color: var(--text-light); /* Texto blanco */
+}
+
+.cart-actions .btn-danger:hover {
+    background-color: var(--purple-primary); /* Hover rosa secundario */
+}
+/* Responsividad para pantallas medianas */
+@media (max-width: 992px) {
+    .cart-container {
+        margin: 180px auto 0;
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .cart-item {
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 0.5rem;
+        text-align: center; /* Centrar contenido */
+    }
+
+    .cart-item-img {
+        margin: 0 auto; /* Centrar imagen */
+        width: 80px;
+        height: 80px;
+    }
+
+    .cart-item-content {
+        margin: 0 auto; /* Centrar contenido */
+    }
+
+    .cart-item-actions {
+        align-items: center; /* Centrar controles */
+    }
+
+    .quantity-controls {
+        justify-content: center; /* Centrar controles */
+        gap: 0.3rem;
+    }
+
+    .cart-item-name {
+        font-size: 1rem;
+    }
+
+    .cart-item-price {
+        font-size: 0.9rem;
+    }
+
+    .btn-quantity,
+    .btn-icon {
+        width: 25px;
+        height: 25px;
+        font-size: 0.9rem;
+    }
+
+    .cart-actions .btn {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 576px) {
+    .cart-container {
+        margin: 180px auto 0;
+    }
+    .cart-item {
+        grid-template-columns: 1fr; /* Una sola columna */
+        text-align: center; /* Centrar el contenido */
+    }
+
+    .cart-item-img {
+        margin: 0 auto; /* Centrar la imagen */
+    }
+
+    .cart-item-content {
+        margin: 0; /* Eliminar margen lateral */
+    }
+
+    .cart-item-actions {
+        align-items: center; /* Centrar los controles */
+    }
+
+    .quantity-controls {
+        justify-content: center; /* Centrar los controles */
+        gap: 0.3rem;
+    }
+
+    .cart-title {
+        font-size: 1.2rem; /* Reducir tamaño del título */
+    }
+
+    .cart-actions {
+        flex-direction: column; /* Botones en columna */
+        gap: 0.5rem;
+    }
+
+    .cart-actions .btn {
+        width: 100%; /* Botones a todo el ancho */
+        text-align: center;
+    }
+}
+
+

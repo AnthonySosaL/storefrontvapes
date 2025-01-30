@@ -2,24 +2,44 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carrito | Tienda Vapes</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="./css/cart.css" rel="stylesheet">
 </head>
 <body>
+  <!-- Navbar -->
   <div id="navbar"></div>
+
+  <div class="cart-container">
+    <div class="cart-header">
+      <h1 class="cart-title">Mi Carrito</h1>
+      <div class="cart-actions">
+        <button id="btnCheckout" class="btn btn-primary">Comprar ahora</button>
+        <button id="btnClearCart" class="btn btn-danger">Vaciar carrito</button>
+      </div>
+    </div>
   
-  <h1>Mi Carrito</h1>
-  <div id="cartItems"></div>
-  <div>
-    <button id="btnCheckout">Comprar ahora</button>
-  </div>
-  <div id="cartResult"></div>
-  <div>
-    <button id="btnClearCart">Vaciar carrito</button>
-  </div>
+    <!-- Productos del carrito -->
+    <div id="cartItems" class="cart-items">
+      <!-- Los productos del carrito se cargarán dinámicamente aquí -->
+      <p class="cart-empty">Cargando tu carrito...</p>
+    </div>
+  
 
+  
+    <!-- Resultados / mensajes -->
+    <div id="cartResult" class="cart-result text-center"></div>
+  </div>
+  
 
+  <!-- Scripts -->
   <script type="module" src="./js/cart.js"></script>
   <script type="module" src="./js/navbar.js"></script>
-
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

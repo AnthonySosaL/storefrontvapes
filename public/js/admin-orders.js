@@ -41,17 +41,34 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  loadOrders(); // Cargar pedidos
+  loadOrders();
 });
 
 // Cargar pedidos realizados
 async function loadOrders() {
   try {
     const snapshot = await getDocs(collection(db, "orders"));
-    ordersDiv.innerHTML = ""; // Limpiar contenido anterior
+    ordersDiv.innerHTML = `
+      <div class="table-responsive">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Productos</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+    `;
+
+    const tbody = document.getElementById("ordersTableBody");
 
     if (snapshot.empty) {
-      ordersDiv.textContent = "No hay pedidos realizados.";
+      tbody.innerHTML = `<tr><td colspan="5">No hay pedidos realizados.</td></tr>`;
       return;
     }
 
@@ -60,37 +77,35 @@ async function loadOrders() {
 
       const itemsList = await Promise.all(
         data.items.map(async (item) => {
-          // Extraer el productId desde el campo correcto
-          const productId = item.price_data.product_data.name.split(" ")[1]; // Ajusta según el formato real
+          const productId = item.price_data.product_data.name.split(" ")[1];
           try {
             const productDoc = await getDoc(doc(db, "products", productId));
             if (productDoc.exists()) {
-              return `${productDoc.data().name} (Cantidad: ${item.quantity})`;
+              return `${productDoc.data().name} x${item.quantity}`;
             } else {
-              return `Producto desconocido (Cantidad: ${item.quantity})`;
+              return `Producto desconocido x${item.quantity}`;
             }
-          } catch (error) {
-            console.error(`Error recuperando producto ${productId}:`, error);
-            return `Error al cargar producto (Cantidad: ${item.quantity})`;
+          } catch {
+            return `Error al cargar producto x${item.quantity}`;
           }
         })
       );
 
-      const orderDiv = document.createElement("div");
-      orderDiv.style.border = "1px solid #ccc";
-      orderDiv.style.margin = "10px";
-      orderDiv.style.padding = "10px";
-
-      orderDiv.innerHTML = `
-        <p>Cliente: ${data.email}</p>
-        <p>Estado: ${data.status}</p>
-        <p>Productos: ${itemsList.join(", ")}</p>
-        <p>Fecha: ${data.createdAt.toDate()}</p>
-        <button class="updateStatus" data-id="${docSnap.id}" data-status="enviado">Marcar como Enviado</button>
-        <button class="updateStatus" data-id="${docSnap.id}" data-status="entregado">Marcar como Entregado</button>
+      const row = `
+        <tr>
+          <td>${data.email}</td>
+          <td>${itemsList.join("\n")}</td> <!-- Cada producto en una nueva línea -->
+          <td><span class="status-badge ${data.status}">${data.status}</span></td>
+          <td>${data.createdAt.toDate()}</td>
+          <td>
+            <button class="btn-action updateStatus" data-id="${docSnap.id}" data-status="enviado">Enviar</button>
+            <button class="btn-action updateStatus" data-id="${docSnap.id}" data-status="entregado">Entregar</button>
+          </td>
+        </tr>
       `;
-      ordersDiv.appendChild(orderDiv);
+      tbody.insertAdjacentHTML("beforeend", row);
     }
+
 
     attachStatusUpdateHandlers();
   } catch (error) {
@@ -102,19 +117,28 @@ async function loadOrders() {
 // Manejar la actualización del estado
 function attachStatusUpdateHandlers() {
   const buttons = document.querySelectorAll(".updateStatus");
-  buttons.forEach(button => {
-    button.addEventListener("click", async () => {
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
       const orderId = button.getAttribute("data-id");
       const newStatus = button.getAttribute("data-status");
 
-      try {
-        await updateDoc(doc(db, "orders", orderId), { status: newStatus });
-        alert(`Estado actualizado a: ${newStatus}`);
-        loadOrders(); // Recargar pedidos
-      } catch (error) {
-        console.error("Error actualizando estado:", error.message);
-        alert("Error actualizando el estado.");
-      }
+      // Mostrar el modal de confirmación
+      const confirmationModal = new bootstrap.Modal(document.getElementById("confirmationModal"));
+      confirmationModal.show();
+
+      // Asignar evento al botón de confirmación dentro del modal
+      const confirmButton = document.getElementById("confirmActionButton");
+      confirmButton.onclick = async () => {
+        try {
+          await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+          loadOrders(); // Recargar pedidos
+          confirmationModal.hide(); // Cerrar el modal
+        } catch (error) {
+          console.error("Error actualizando estado:", error.message);
+          alert("Error actualizando el estado."); // O puedes manejarlo de forma diferente
+        }
+      };
     });
   });
 }
+

@@ -1,0 +1,213 @@
+/* Variables CSS */
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --pink-secondary: #FF99CC;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30;
+    --bg-gradient-2: #1A0A2F;
+}
+
+/* Reset general */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    min-width: 300px; /* Para pantallas pequeñas */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+.orders-table thead th {
+    background-color: var(--purple-primary); /* Fondo morado para el encabezado */
+    color: var(--text-light); /* Texto blanco */
+    font-weight: bold;
+    text-transform: uppercase;
+
+}
+.orders-table td {
+    border-right: 2px solid var(--purple-primary); /* Líneas verticales para separar columnas */
+    border-left: 2px solid var(--purple-primary); /* Líneas verticales para separar columnas */
+    border-bottom: 2px solid var(--purple-primary); /* Línea horizontal para separar filas */
+
+}
+
+
+
+
+.orders-table {
+    border-radius: 15px; /* Bordes redondeados */
+    overflow: hidden; /* Evitar que el contenido sobresalga */
+}
+
+
+.orders-table tbody tr:nth-child(even) {
+    background-color: rgba(145, 102, 185, 0.1); /* Color alternativo para filas pares */
+}
+
+.orders-table tbody tr:hover {
+    background-color: rgba(145, 102, 185, 0.2); /* Efecto hover para filas */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+
+
+
+
+.orders-container {
+    width: 90%;
+    max-width: 1200px; /* Máximo ancho */
+    margin: 100px auto 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--purple-primary); /* Borde de la tabla con color morado */
+
+}
+
+.orders-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--purple-primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(186, 85, 211, 0.3);
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.order-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid rgba(255, 1, 1, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.order-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.order-item p {
+    margin: 0;
+    color: var(--purple-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+.status-badge.comprado {
+    background: var(--pink-primary);
+    color: #8b0000;
+}
+
+.status-badge.enviado {
+    background: var(--purple-secondary);
+    color: white;
+}
+
+.status-badge.entregado {
+    background: green;
+    color: white;
+}
+
+.order-item ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.order-item ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.order-item ul li img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+    .orders-container {
+        width: 95%;
+        max-width: 800px;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .orders-container {
+        max-width: 600px;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .orders-container {
+        max-width: 400px;
+        padding: 1rem;
+        margin-top: 160px;
+    }
+
+    .orders-title {
+        font-size: 1.2rem;
+    }
+
+    .order-item p {
+        font-size: 0.9rem;
+    }
+}

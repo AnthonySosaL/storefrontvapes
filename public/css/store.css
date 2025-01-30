@@ -1,0 +1,244 @@
+/* store.css */
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30;
+    --bg-gradient-2: #1A0A2F;
+}
+  
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    min-width: 300px; /* Reducido para permitir tamaños menores */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+
+
+  
+/* Contenedor de productos */
+.products-container {
+    width: 90%; /* Ocupa el 90% del ancho disponible */
+    padding: 2rem 3%; /* Espaciado interno: 2rem arriba/abajo, 3% a los lados */
+    margin: 120px auto 0; /* Centrar el contenedor horizontalmente y añadir margen superior */
+    background: #F698FC; /* Fondo rosa */
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra */
+    border: 2px solid var(--purple-primary); /* Borde morado principal */
+}
+
+
+/* Título */
+.products-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white; /* Texto blanco */
+    text-align: center; /* Centrar el título */
+    margin-bottom: 2rem; /* Espaciado debajo del título */
+}
+
+/* Distribución de las tarjetas */
+#productsList {
+    display: grid; /* Activar CSS Grid */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Tarjetas dinámicas */
+    gap: 1.5rem; /* Espaciado entre las tarjetas */
+}
+
+/* Estilos para cada tarjeta */
+.card-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: rgba(240, 221, 245, 0.467);
+    border: 2px solid var(--purple-primary);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Hover en las tarjetas */
+.card-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen */
+.card-item-img {
+    width: 180px; /* Incrementar ancho */
+    height: 180px; /* Incrementar alto */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1.5rem; /* Mayor separación debajo de la imagen */
+    border: 1px solid var(--purple-secondary);
+}
+
+/* Nombre del producto */
+.card-item-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--purple-primary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+/* Precio y Stock */
+.card-item-price,
+.card-item-stock {
+    font-size: 1rem;
+    color: var(--purple-secondary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+/* Controles de cantidad */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.quantity-controls input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid var(--purple-secondary);
+    border-radius: 5px;
+}
+
+.quantity-controls .btn-quantity {
+    width: 30px;
+    height: 30px;
+    background-color: var(--purple-primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.quantity-controls .btn-quantity:hover {
+    background-color: var(--purple-secondary);
+}
+
+/* Botón de agregar al carrito */
+.btn-add-cart {
+    width: 80%; /* Reducir el ancho al 80% del contenedor */
+    margin-top: 1rem; /* Añadir espacio encima del botón */
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: white;
+    background-color: var(--purple-primary);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background-color: var(--purple-secondary);
+}
+
+.btn-add-cart:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+/* Eliminar controles de cantidad preestablecidos en navegadores */
+input[type="number"] {
+    -moz-appearance: textfield; /* Para Firefox */
+    -webkit-appearance: none; /* Para Chrome, Safari, Edge */
+    appearance: none; /* Estándar */
+}
+
+/* Ajuste adicional para eliminar flechas en navegadores basados en WebKit */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+
+/* Responsividad */
+
+/* Pantallas medianas */
+@media (max-width: 992px) {
+    #productsList {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Columnas más pequeñas */
+        gap: 1rem; /* Menor espaciado entre tarjetas */
+    }
+
+    .card-item-img {
+        width: 130px;
+        height: 130px;
+    }
+
+    .card-item-name {
+        font-size: 1.1rem;
+    }
+
+    .card-item-price,
+    .card-item-stock {
+        font-size: 0.9rem;
+    }
+
+    .btn-add-cart {
+        font-size: 0.9rem;
+    }
+}
+
+/* Pantallas pequeñas */
+@media (max-width: 576px) {
+    #productsList {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+
+    .card-item-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .card-item {
+        padding: 1rem;
+    }
+
+    .card-item-name {
+        font-size: 1rem;
+    }
+
+    .card-item-price,
+    .card-item-stock {
+        font-size: 0.8rem;
+    }
+
+    .btn-add-cart {
+        font-size: 0.8rem;
+    }
+}

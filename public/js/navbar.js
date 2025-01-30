@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     app = getApps()[0];
   }
-  
+
   const auth = getAuth(app);
   const navbarDiv = document.getElementById("navbar");
 
@@ -42,11 +42,16 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((html) => {
         navbarDiv.innerHTML = html;
 
+        // Dispara un evento indicando que la navbar está lista
+        const navbarLoadedEvent = new Event("navbarLoaded");
+        document.dispatchEvent(navbarLoadedEvent);
+
         // Si es admin o user, agregar lógica de cierre de sesión
         if (user) {
-          const logoutButton = document.getElementById("logoutButton");
-          if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
+          const logoutLink = document.getElementById("logoutLink");
+          if (logoutLink) {
+            logoutLink.addEventListener("click", async (event) => {
+              event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
               try {
                 await auth.signOut();
                 alert("Sesión cerrada correctamente.");
@@ -63,3 +68,4 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 });
+

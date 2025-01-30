@@ -1,0 +1,182 @@
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --pink-secondary: #FF99CC;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30;
+    --bg-gradient-2: #1A0A2F;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    min-width: 300px; /* Reducido para permitir tamaños menores */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+.orders-container {
+    width: 90%;
+    max-width: 1200px; /* Máximo ancho en pantallas grandes */
+    margin: 100px auto 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.orders-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--purple-primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(186, 85, 211, 0.3);
+}
+
+.table-responsive {
+    overflow-y: auto; /* Desplazamiento vertical para muchas filas */
+    overflow-x: auto; /* Permitir desplazamiento horizontal solo cuando sea necesario */
+    max-height: 400px; /* Limita la altura máxima visible de la tabla */
+    width: 100%;
+}
+
+.orders-table {
+    width: 100%; /* Tabla ocupa todo el ancho del contenedor */
+    max-width: 100%; /* Evitar que la tabla se desborde */
+    min-width: 700px; /* Evitar que la tabla colapse demasiado */
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    table-layout: auto;
+}
+
+.orders-table thead {
+    background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary)) !important;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 0.8rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.orders-table th {
+    color: var(--text-black);
+    font-weight: 500;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+.status-badge.comprado {
+    background: var(--pink-primary);
+    color: #8b0000;
+}
+
+.status-badge.enviado {
+    background: var(--purple-secondary);
+    color: white;
+}
+
+.status-badge.entregado {
+    background: green;
+    color: white;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+    .orders-container {
+        width: 95%;
+        max-width: 800px; /* Reducir el máximo ancho en pantallas medianas */
+        margin-top: 160px; /* Más espacio superior */
+    }
+
+    .orders-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .orders-container {
+        width: 95%;
+        max-width: 600px; /* Reducir el máximo ancho en pantallas pequeñas */
+        padding: 1.5rem;
+        margin-top: 160px; /* Incrementar el espacio superior */
+    }
+
+    .orders-title {
+        font-size: 1.5rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .orders-container {
+        width: 95%;
+        max-width: 400px; /* Reducir el máximo ancho en pantallas muy pequeñas */
+        padding: 1rem;
+        margin-top: 160px; /* Aumentar aún más el espacio superior */
+    }
+
+    .orders-title {
+        font-size: 1.2rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 0.9rem;
+    }
+}

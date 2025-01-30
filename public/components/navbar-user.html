@@ -1,7 +1,46 @@
-<nav>
-    <a href="index.html">Inicio</a>
-    <a href="store.html">Tienda</a>
-    <a href="cart.html" id="cartLink">Carrito</a>
-    <a href="user-orders.html">Mis Compras</a> <!-- Enlace añadido -->
-    <button id="logoutButton">Cerrar Sesión</button>
+<!-- navbar-user.html -->
+<head>
+    <link href="./css/navbar-user.css" rel="stylesheet">
+</head>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            VAPORU
+        </a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarUser"
+            aria-controls="navbarUser"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarUser">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="store.html">Tienda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="cart.html" id="cartLink">Carrito</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user-orders.html">Mis Compras</a>
+                </li>
+                <li class="nav-item">
+                    <a id="navCartButton" class="nav-link" href="#">
+                      Ver Carrito
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a id="logoutLink" class="nav-link" href="#">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>

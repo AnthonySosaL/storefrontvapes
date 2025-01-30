@@ -2,6 +2,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.17.
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 import { API_BASE_URL } from "./config.js";
+
 // Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCCQONgsbGsPb6tske9HIxOJvqRz_cYikg",
@@ -23,12 +24,12 @@ if (!getApps().length) {
 
 const auth = getAuth(app);
 const db = getFirestore(app);
-const ordersDiv = document.getElementById("ordersList");
+const ordersList = document.getElementById("ordersList");
 
 // Verificar autenticación del usuario
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    ordersDiv.textContent = "No estás autenticado. Redirigiendo...";
+    ordersList.innerHTML = `<tr><td colspan="3" class="text-center">No estás autenticado. Redirigiendo...</td></tr>`;
     setTimeout(() => (window.location.href = "index.html"), 2000);
     return;
   }
@@ -38,24 +39,24 @@ onAuthStateChanged(auth, async (user) => {
     await loadUserOrders(user.uid);
   } catch (error) {
     console.error("Error cargando las compras del usuario:", error.message);
-    ordersDiv.textContent = "Error cargando tus compras.";
+    ordersList.innerHTML = `<tr><td colspan="3" class="text-center">Error cargando tus compras.</td></tr>`;
   }
 });
 
-// Cargar pedidos del usuario autenticado
+// Función para cargar pedidos del usuario autenticado
 async function loadUserOrders(userId) {
   const ordersQuery = query(collection(db, "orders"), where("userId", "==", userId));
   const snapshot = await getDocs(ordersQuery);
-  ordersDiv.innerHTML = ""; // Limpiar contenido anterior
+  ordersList.innerHTML = ""; // Limpiar contenido anterior
 
   if (snapshot.empty) {
-    ordersDiv.textContent = "No tienes compras registradas.";
+    ordersList.innerHTML = `<tr><td colspan="3" class="text-center">No tienes compras registradas.</td></tr>`;
     return;
   }
 
   for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
-  
+
     // Obtener detalles de los productos desde Firestore
     const itemsList = await Promise.all(
       data.items.map(async (item) => {
@@ -67,40 +68,34 @@ async function loadUserOrders(userId) {
             const imagePath = productData.imagePath
               ? `${API_BASE_URL}${productData.imagePath}` // Construir enlace completo
               : `${API_BASE_URL}/default-product.jpg`; // Imagen por defecto
-  
-            console.log(`Recuperado producto: ${productData.name}, Imagen: ${imagePath}`); // Log para verificar
-  
-            return `
-              <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <img src="${imagePath}" alt="${productData.name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                <span>${productData.name} (Cantidad: ${item.quantity})</span>
-              </div>
-            `;
+
+            return `<li>
+                      <img src="${imagePath}" alt="${productData.name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                      <span>${productData.name} (Cantidad: ${item.quantity})</span>
+                    </li>`;
           } else {
-            return `<div>Producto desconocido (Cantidad: ${item.quantity})</div>`;
+            return `<li>Producto desconocido (Cantidad: ${item.quantity})</li>`;
           }
         } catch (error) {
           console.error(`Error recuperando producto ${productId}:`, error);
-          return `<div>Error al cargar producto (Cantidad: ${item.quantity})</div>`;
+          return `<li>Error al cargar producto (Cantidad: ${item.quantity})</li>`;
         }
       })
     );
-  
-    const orderDiv = document.createElement("div");
-    orderDiv.style.border = "1px solid #ccc";
-    orderDiv.style.margin = "10px";
-    orderDiv.style.padding = "10px";
-  
-    orderDiv.innerHTML = `
-      <p>Estado: ${data.status}</p>
-      <p>Fecha de compra: ${data.createdAt.toDate()}</p>
-      <p>Productos:</p>
-      <ul>
-        ${itemsList.join("")}
-      </ul>
-    `;
-    ordersDiv.appendChild(orderDiv);
-  }
-  
-}
 
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${data.createdAt.toDate().toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })}</td>
+      <td><span class="status-badge ${data.status}">${data.status}</span></td>
+      <td><ul>${itemsList.join("")}</ul></td>
+    `;
+
+    ordersList.appendChild(row);
+  }
+}

@@ -3,16 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Pedidos Realizados</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS -->
+    <link href="./css/admin-view-orders.css" rel="stylesheet">
 </head>
 <body>
   <div id="navbar"></div>
 
-  <h1>Productos Comprados</h1>
-  <div id="ordersList" style="border: 1px solid #ccc; padding: 10px;">
-    <p>Cargando pedidos...</p>
+  <div class="orders-container">
+    <h1 class="orders-title">Pedidos Realizados</h1>
+    
+    <div class="table-responsive">
+      <table class="orders-table table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="ordersList">
+          <!-- Los pedidos se insertarán aquí -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script type="module" src="./js/admin-view-orders.js"></script>
   <script type="module" src="./js/navbar.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

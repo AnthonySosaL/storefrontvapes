@@ -1,0 +1,215 @@
+/* login.css */
+:root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --pink-secondary: #FF99CC;
+    --text-light: #FFFFFF;
+    --bg-gradient-1: #2A0B30; /* Morado más oscuro */
+    --bg-gradient-2: #1A0A2F; /* Morado casi negro */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    position: relative;
+    background: linear-gradient(
+      45deg,
+      var(--bg-gradient-1),
+      var(--bg-gradient-2)
+    );
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(142, 45, 165, 0.15); /* Capa morada translúcida */
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+.login-container {
+    max-width: 700px; /* Reducir ancho */
+    margin: 200px auto 0; /* Margen superior = altura navbar */
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.login-card:hover {
+    transform: translateY(-5px) rotateX(1deg) rotateY(1deg);
+}
+
+.form-control {
+    border: 2px solid var(--purple-primary);
+    border-radius: 30px;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 20px rgba(186, 85, 211, 0.3);
+    border-color: var(--pink-secondary);
+}
+
+.btn-primary {
+    background: linear-gradient(
+      135deg, 
+      var(--purple-primary), 
+      var(--purple-secondary)
+    );
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    transform: rotate(45deg);
+    animation: neonFlow 3s infinite linear;
+}
+
+@keyframes neonFlow {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(186, 85, 211, 0.5);
+}
+
+/* Modificaciones para modales */
+.modal-content {
+    border: 2px solid var(--purple-primary);
+    border-radius: 15px;
+}
+/* Cambiar el color del botón de cierre en el modal */
+.modal-content .btn-close {
+    filter: invert(39%) sepia(80%) saturate(735%) hue-rotate(255deg) brightness(100%) contrast(100%);
+}
+  
+  /* Cambiar el color del hover */
+.modal-content .btn-close:hover {
+    filter: invert(50%) sepia(96%) saturate(546%) hue-rotate(275deg) brightness(105%) contrast(90%);
+}
+  /* Cambiar el color del texto del título del modal (Error) */
+.modal-content .modal-title {
+    color: var(--purple-primary); /* Usa el color definido en tu paleta o reemplázalo con un color morado específico */
+    font-weight: bold;
+}
+
+
+.modal-dialog {
+    max-width: 600px;
+    margin: 1.75rem auto;
+}
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 90%; /* Ajustar ancho del modal */
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1rem auto;
+    }
+}
+
+.btn-open-signup {
+    background: transparent;
+    border: 2px solid var(--purple-primary);
+    color: var(--purple-primary);
+    transition: all 0.3s ease;
+}
+
+.btn-open-signup:hover {
+    background: var(--purple-primary);
+    color: var(--text-light);
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 992px) {
+    .login-container {
+        max-width: 700px; /* Mantener el ancho fijo hasta que sea menor a 720px */
+        margin-top: 200px; /* Incrementar el margen superior */
+    }
+
+    .login-card {
+        padding: 1.8rem; /* Ajustar el padding ligeramente */
+    }
+}
+
+@media (max-width: 720px) {
+    .login-container {
+        max-width: 90%; /* Hacer que el ancho sea proporcional a la pantalla */
+        margin-top: 220px; /* Incrementar margen superior para navbar */
+        padding: 1.5rem;
+    }
+
+    .login-card {
+        padding: 1.5rem; /* Reducir padding para mantener proporción */
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        max-width: 95%; /* Ajustar aún más en pantallas muy pequeñas */
+        margin-top: 200px;
+    }
+
+    .login-card {
+        border-radius: 10px;
+        padding: 1.2rem; /* Espaciado más compacto */
+    }
+
+    .form-control {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        padding: 0.8rem 1.5rem;
+    }
+}

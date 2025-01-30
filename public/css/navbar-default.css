@@ -1,0 +1,136 @@
+/* ==========================
+   navbar-default.css
+   ========================== */
+   :root {
+    --purple-primary: #BA55D3;
+    --purple-secondary: #9370DB;
+    --pink-primary: #FFB6C1;
+    --pink-secondary: #FF99CC;
+    --text-light: #FFFFFF; 
+  }
+  
+  .navbar {
+    background: url('../imagenes/navbar2.png') no-repeat center center / cover;
+    height: 160px; /* Altura fija */
+    position: fixed; /* Mantener fijo */
+    width: 100%;
+    z-index: 5;
+    border: none !important;
+    display: flex;
+    align-items: flex-end !important; /* Alinear todo hacia la parte inferior */
+    padding-bottom: 105px !important; /* Ajusta para evitar superposición con gotas */
+  }
+  
+  
+  
+  /* Contenedor principal */
+  .navbar > .container {
+    display: flex;
+    justify-content: space-between; /* Coloca el brand a la izquierda y los links a la derecha */
+    align-items: center; /* Alinea verticalmente los elementos */
+  }
+  
+  /* Marca/Logo */
+  .navbar-brand {
+    color: var(--text-light) !important;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+
+  }
+  .navbar-brand:hover {
+    transform: scale(1.02);
+    text-shadow: 0 0 20px rgba(186, 85, 211, 0.6); 
+  }
+
+
+  
+  
+  /* Links */
+  .nav-link {
+    color: var(--text-light) !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0 1rem;
+    border-radius: 25px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  }
+  .nav-link:hover {
+    background: rgba(186, 85, 211, 0.15);
+    transform: translateY(-2px);
+  }
+  /* Subrayado en hover (CSS puro) */
+  .nav-link:hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--purple-primary);
+    animation: underline 0.3s forwards;
+  }
+  .nav-link.active {
+    background: rgba(255, 153, 204, 0.2);
+    box-shadow: 0 4px 15px rgba(255, 153, 204, 0.25);
+  }
+  @keyframes underline {
+    from { width: 0; }
+    to   { width: 100%; }
+  }
+  
+  /* Botón Hamburguesa */
+  .navbar-toggler {
+    border-color: var(--purple-secondary) !important;
+    margin-right: 1.5rem;
+  }
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  /* ==========================
+   Media Queries (Móvil)
+   ========================== */
+@media (max-width: 992px) {
+  .navbar {
+    height: 200px !important;
+    align-items: flex-end !important; /* Alinear todo hacia la parte inferior */
+    padding-bottom: 200px !important; /* Ajusta para evitar superposición con gotas */
+
+  }
+  
+  .navbar-collapse {
+    background: rgba(76, 0, 130, 0.508); /* Fondo morado oscuro semi-transparente */
+    border-radius: 15px;
+  }
+
+  .nav-link {
+    background: transparent !important;
+    margin: 0.5rem 0;
+    text-align: center;
+    transition: all 0.2s ease !important;
+    
+  }
+
+  .nav-link:hover {
+    background: rgba(186, 85, 211, 0.7) !important; /* Morado sólido */
+    transform: none !important; /* Quitamos el movimiento */
+  }
+
+  .nav-link:hover::after {
+    animation: none; /* Desactivamos la animación del subrayado */
+    background: var(--text-light); /* Subrayado blanco */
+    height: 1.5px;
+  }
+
+  .nav-link.active {
+    background: rgba(147, 112, 219, 0.8) !important; /* Morado más claro */
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.5);
+  }
+
+
+}
+  

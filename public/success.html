@@ -1,20 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compra Exitosa | Tienda Vapes</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="./css/index.css" rel="stylesheet">
+  <link href="./css/loader.css" rel="stylesheet">
+  <link href="./css/cart-modal.css" rel="stylesheet"> <!-- 🔹 CSS del carrito -->
 </head>
 <body>
+
+  <!-- Loader Overlay -->
+  <div id="loader" class="loader-overlay">
+    <div class="loader-circle"></div>
+  </div>
+
   <div id="navbar"></div>
 
-  <h1>Compra Exitosa</h1>
-  <div id="result"></div>
+  <main>
+    <header class="position-relative vh-100 d-flex align-items-center justify-content-center">
+      <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">¡Gracias por tu compra!</h1>
+        <p class="lead mb-5">Tu compra ha sido procesada exitosamente.</p>
+        <div id="result"></div>
+        <a href="store.html" class="btn btn-lg btn-primary mt-4">
+          Volver a la tienda <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </header>
+  </main>
 
+  <!-- 🔹 Modal para el carrito -->
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cartModalLabel">Mi Carrito</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cartItems"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCheckout" class="btn btn-purple-light">Ir al carrito</button>
+          <button id="btnCloseModal" class="btn btn-purple-light" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  
-  </script>
-  
-  <script type="module" src="./js/success.js"></script>
+  <!-- 🔹 Three.js y dependencias para el modelo 3D -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/BokehPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/BokehShader.js"></script>
+
+  <!-- 🔹 Scripts locales -->
   <script type="module" src="./js/navbar.js"></script>
+  <script type="module" src="./js/cart-modal.js"></script>
+  <script type="module" src="./js/success.js"></script> <!-- 🔹 Script de verificación de compra -->
+  <script type="module" src="./js/vapes.js"></script> <!-- 🔹 Se agrega el script del OLB (Vape 3D) -->
+  <script src="./js/loader.js"></script>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

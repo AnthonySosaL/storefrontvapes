@@ -3,35 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login | Tienda Vapes</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="./css/login.css" rel="stylesheet">
 </head>
 <body>
   <div id="navbar"></div>
-  
-  <h1>Página de Login</h1>
-  
-  <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-    <h3>Iniciar Sesión</h3>
-    <label>Email: <input type="email" id="loginEmail"></label><br>
-    <label>Password: <input type="password" id="loginPass"></label><br>
-    <button id="btnLogin">Login</button>
+
+  <!-- Contenido Principal -->
+  <div class="login-container">
+    <!-- Tarjeta de Login -->
+    <div class="login-card">
+      <h3 class="text-center mb-4">Iniciar Sesión</h3>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="loginEmail" class="form-control form-control-lg">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Contraseña</label>
+        <input type="password" id="loginPass" class="form-control form-control-lg">
+      </div>
+      <button id="btnLogin" class="btn btn-primary w-100 btn-lg">Ingresar</button>
+      <button class="btn btn-open-signup w-100 mt-3" data-bs-toggle="modal" data-bs-target="#signupModal">
+        Crear Cuenta Nueva
+      </button>
+    </div>
   </div>
 
-  <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-    <h3>Crear Cuenta (User)</h3>
-    <label>Email: <input type="email" id="signupEmail"></label><br>
-    <label>Password: <input type="password" id="signupPass"></label><br>
-    <button id="btnSignupUser">Crear User</button>
+  <!-- Modal para Registro (Reemplaza el div de crear cuenta) -->
+  <div class="modal fade" id="signupModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Crear Cuenta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="signupEmail" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" id="signupPass" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnSignupUser" class="btn btn-primary">Registrarse</button>
+        </div>
+      </div>
+    </div>
   </div>
 
+    <!-- Modal para el carrito -->
+    <div id="cartModal" style="display: none; position: fixed; top: 10%; left: 10%; width: 80%; background-color: white; border: 1px solid black; padding: 20px;">
+      <h2>Mi Carrito</h2>
+      <div id="cartItems"></div>
+      <button id="btnCheckout">Ir al carrito</button>
+      <button id="btnCloseModal">Cerrar</button>
+    </div>
+  
+    <!-- Modal para mensajes de error -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="errorModalBody">
+            <!-- Aquí se cargará dinámicamente el mensaje de error -->
+          </div>
+        </div>
+      </div>
+    </div>
   <div id="result"></div>
 
-  <script type="module">
-    import { loadNavbar } from "./js/navbarLoader.js";
-    loadNavbar();
-  </script>
+
 
   <script type="module" src="./js/login.js"></script>
   <script type="module" src="./js/navbar.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

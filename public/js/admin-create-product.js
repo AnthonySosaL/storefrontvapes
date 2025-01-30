@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
 import { API_BASE_URL } from "./config.js";
 
 const firebaseConfig = {
@@ -15,7 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", () => {
   const btnCreateProduct = document.getElementById("btnCreateProduct");
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = document.getElementById("prodName").value;
     const price = parseFloat(document.getElementById("prodPrice").value);
     const stock = parseInt(document.getElementById("prodStock").value);
-    const status = document.getElementById("prodStatus").value; // Leer el estado
+    const status = document.getElementById("prodStatus").value;
     const imageFile = document.getElementById("prodImage").files[0];
 
     if (!name || isNaN(price) || isNaN(stock) || !status || !imageFile) {
@@ -51,15 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      // Crear el producto en Firestore con el estado
-      const newProductRef = await addDoc(collection(db, "products"), {
-        name,
-        price,
-        stock,
-        status,
-      });
-
-      // Subir la imagen al backend
+      // Paso 1: Subir la imagen al backend
       const formData = new FormData();
       formData.append("image", imageFile);
 
@@ -74,16 +64,31 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(uploadData.message || "Error subiendo la imagen");
       }
 
-      // Actualizar el producto con la ruta de la imagen
+      // Obtener el `imagePath` de la respuesta
       const imagePath = uploadData.imagePath;
-      await updateDoc(doc(db, "products", newProductRef.id), { imagePath });
 
+      // Paso 2: Enviar los datos del producto junto con el `imagePath` a la API de creación
+      const productRes = await fetch(`${API_BASE_URL}/api/createRoutes/createProduct`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, price, stock, status, imagePath }),
+      });
+
+      const productData = await productRes.json();
+
+      if (!productRes.ok) {
+        throw new Error(productData.message || "Error creando el producto");
+      }
+
+      // Mostrar éxito y limpiar el formulario
       resultDiv.textContent = "Producto creado con éxito!";
       document.getElementById("prodName").value = "";
       document.getElementById("prodPrice").value = "";
       document.getElementById("prodStock").value = "";
       document.getElementById("prodImage").value = "";
-      document.getElementById("prodStatus").value = "activo"; // Reiniciar el estado
+      document.getElementById("prodStatus").value = "activo";
     } catch (error) {
       resultDiv.textContent = "Error: " + error.message;
     }

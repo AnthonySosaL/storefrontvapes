@@ -22,6 +22,16 @@ const cartResultDiv = document.getElementById("cartResult");
 const btnCheckout = document.getElementById("btnCheckout");
 const btnClearCart = document.getElementById("btnClearCart");
 
+document.addEventListener("navbarLoaded", () => {
+  const navCartButton = document.getElementById("navCartButton");
+  
+  if (navCartButton) {
+    navCartButton.style.display = "none"; // 🔹 Oculta el botón "Ver Carrito" en cart.html
+  }
+  console.log("hola");
+});
+
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     loadCart(user.uid);
@@ -33,74 +43,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// Cargar productos del carrito
-// Cargar productos del carrito
-async function loadCart(uid) {
-    try {
-      const cartRef = doc(db, "carts", uid);
-      const cartSnap = await getDoc(cartRef);
-  
-      if (!cartSnap.exists()) {
-        cartItemsDiv.textContent = "Carrito vacío.";
-        return;
-      }
-  
-      let cartData = cartSnap.data();
-      if (!cartData.items || cartData.items.length === 0) {
-        cartItemsDiv.textContent = "Carrito vacío.";
-        return;
-      }
-  
-      const validItems = [];
-      const itemsList = await Promise.all(
-        cartData.items.map(async (item) => {
-          try {
-            const productSnap = await getDoc(doc(db, "products", item.productId));
-            if (productSnap.exists()) {
-              const productData = productSnap.data();
-              if (productData.status === "activo") {
-                validItems.push(item); // Solo mantener productos activos
-                return `
-                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <img src="${API_BASE_URL}${productData.imagePath || '/default-product.jpg'}" alt="${productData.name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                    <p>${productData.name}</p>
-                    <p>Cantidad: 
-                      <input type="number" id="quantity-${item.productId}" value="${item.quantity}" min="1" />
-                    </p>
-                    <button onclick="updateCart('${item.productId}')">Actualizar</button>
-                    <button onclick="removeFromCart('${item.productId}')">Eliminar</button>
-                  </div>
-                `;
-              } else {
-                console.warn(`Producto inactivo eliminado del carrito: ${item.productId}`);
-                return "";
-              }
-            } else {
-              console.warn(`Producto no encontrado eliminado del carrito: ${item.productId}`);
-              return "";
-            }
-          } catch (error) {
-            console.error(`Error recuperando producto ${item.productId}:`, error);
-            return `<div>Error al cargar producto (Cantidad: ${item.quantity})</div>`;
-          }
-        })
-      );
-  
-      // Actualizar Firestore si hubo cambios en los productos válidos
-      if (validItems.length !== cartData.items.length) {
-        await updateDoc(cartRef, { items: validItems });
-      }
-  
-      cartItemsDiv.innerHTML = itemsList.filter((item) => item !== "").join("");
-  
-      if (validItems.length === 0) {
-        cartItemsDiv.textContent = "Carrito vacío.";
-      }
-    } catch (error) {
-      cartResultDiv.textContent = "Error cargando carrito: " + error.message;
-    }
-  }
-  
   
   // Actualizar cantidad de producto en el carrito
   async function updateCart(productId) {
@@ -186,76 +128,258 @@ async function loadCart(uid) {
   
 
 // Crear sesión de Stripe Checkout y redirigir
-// Crear sesión de Stripe Checkout y redirigir
-// Crear sesión de Stripe Checkout y redirigir
-btnCheckout.addEventListener("click", async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      cartResultDiv.textContent = "Debes iniciar sesión.";
+async function loadCart(uid) {
+  try {
+    const cartRef = doc(db, "carts", uid);
+    const cartSnap = await getDoc(cartRef);
+
+    if (!cartSnap.exists() || !cartSnap.data().items.length) {
+      cartItemsDiv.innerHTML = `<p class="cart-empty">Tu carrito está vacío.</p>`;
       return;
     }
-  
-    try {
-      const token = await user.getIdToken();
-      const cartRef = doc(db, "carts", user.uid);
-      const cartSnap = await getDoc(cartRef);
-      const cartData = cartSnap.data();
-  
-      if (!cartData || !cartData.items || cartData.items.length === 0) {
-        cartResultDiv.textContent = "Tu carrito está vacío.";
-        return;
-      }
-  
-      // Validar y formatear los datos antes de enviarlos a Stripe
-      const items = cartData.items.map((item) => {
-        const quantity = parseInt(item.quantity, 10);
-      
-        if (isNaN(quantity) || quantity <= 0) {
-          throw new Error(`Cantidad inválida para el producto: ${item.productId}`);
+
+    const itemsList = await Promise.all(
+      cartSnap.data().items.map(async (item) => {
+        const productSnap = await getDoc(doc(db, "products", item.productId));
+        if (productSnap.exists()) {
+          const product = productSnap.data();
+          const totalPrice = (item.quantity * product.price).toFixed(2); // Precio total calculado
+
+          return `
+            <div class="cart-item" id="cart-item-${item.productId}">
+              <!-- Imagen -->
+              <img src="${API_BASE_URL}${product.imagePath || '/default-product.jpg'}" alt="${product.name}" class="cart-item-img">
+              
+              <!-- Contenido -->
+              <div class="cart-item-content">
+                <!-- Nombre del producto -->
+                <h5 class="cart-item-name">${product.name}</h5>
+                <!-- Precio total -->
+                <p class="cart-item-price">Precio total: $<span id="total-price-${item.productId}">${totalPrice}</span></p>
+              </div>
+
+              <!-- Controles de cantidad y botón eliminar -->
+              <div class="cart-item-actions">
+                <div class="quantity-controls">
+                  <input 
+                    type="number" 
+                    id="quantity-${item.productId}" 
+                    value="${item.quantity}" 
+                    min="1" 
+                    class="cart-item-quantity" 
+                    readonly
+                  />
+                  <button 
+                    class="btn-quantity" 
+                    onclick="updateQuantity('${item.productId}', 1)"
+                  >+</button>
+                  <button 
+                    class="btn-quantity" 
+                    onclick="updateQuantity('${item.productId}', -1)"
+                  >−</button>
+                </div>
+                <button 
+                  class="btn btn-danger btn-icon" 
+                  onclick="removeFromCart('${item.productId}')"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
         }
-      
-        const priceInCents = 1000; // Simulado, reemplázalo con el precio real
-      
-        if (isNaN(priceInCents) || priceInCents <= 0) {
-          throw new Error(`Precio inválido para el producto: ${item.productId}`);
-        }
-      
-        return {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: `Producto ${item.productId}`,
-            },
-            unit_amount: priceInCents,
-          },
-          quantity,
-        };
-      });
-      
-  
-      // Imprimir el objeto `items` completo para depuración
-      console.log("Datos enviados a Stripe:", items);
-  
-      const resp = await fetch(`${API_BASE_URL}/api/checkout/create-checkout-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ items }),
-      });
-  
-      const data = await resp.json();
-      if (resp.ok) {
-        // Redirigir a la página de pago de Stripe
-        window.location.href = data.url;
-      } else {
-        cartResultDiv.textContent = "Error al iniciar el pago: " + data.error;
-      }
-    } catch (error) {
-      cartResultDiv.textContent = "Error al procesar la compra: " + error.message;
-      console.error("Error detallado:", error);
+        return ""; // Si el producto no existe, devuelve una cadena vacía
+      })
+    );
+
+    cartItemsDiv.innerHTML = itemsList.filter(Boolean).join("");
+  } catch (error) {
+    cartResultDiv.textContent = `Error cargando carrito: ${error.message}`;
+  }
+}
+
+
+async function updateQuantity(productId, change) {
+  const user = auth.currentUser;
+  if (!user) {
+    cartResultDiv.textContent = "Debes iniciar sesión.";
+    return;
+  }
+
+  // Obtener el input de cantidad y el precio total
+  const input = document.getElementById(`quantity-${productId}`);
+  const totalPriceSpan = document.getElementById(`total-price-${productId}`);
+
+  let currentQuantity = parseInt(input.value, 10);
+  const newQuantity = currentQuantity + change;
+
+  // Evitar que la cantidad sea menor que 1
+  if (newQuantity < 1) return;
+
+  input.value = newQuantity;
+
+  // Actualizar el precio total dinámicamente
+  const productPrice = parseFloat(totalPriceSpan.textContent) / currentQuantity;
+  const newTotalPrice = (newQuantity * productPrice).toFixed(2);
+  totalPriceSpan.textContent = newTotalPrice;
+
+  // Actualizar la base de datos
+  try {
+    const cartRef = doc(db, "carts", user.uid);
+    const cartSnap = await getDoc(cartRef);
+
+    if (!cartSnap.exists()) {
+      cartResultDiv.textContent = "El carrito no existe.";
+      return;
     }
-  });
+
+    const cartData = cartSnap.data();
+    const updatedItems = cartData.items.map((item) => {
+      if (item.productId === productId) {
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    await updateDoc(cartRef, { items: updatedItems });
+    cartResultDiv.textContent = "Cantidad actualizada correctamente.";
+  } catch (error) {
+    cartResultDiv.textContent = "Error actualizando cantidad: " + error.message;
+  }
+}
+
+
+
+
+
+
+// Vaciar carrito y actualizar cantidades al comprar
+btnCheckout.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    cartResultDiv.textContent = "Debes iniciar sesión.";
+    return;
+  }
+
+  try {
+    // Actualizar las cantidades en la base de datos
+    const inputs = document.querySelectorAll(".cart-item-quantity");
+    const cartRef = doc(db, "carts", user.uid);
+    const cartSnap = await getDoc(cartRef);
+
+    if (!cartSnap.exists()) {
+      cartResultDiv.textContent = "Tu carrito está vacío.";
+      return;
+    }
+
+    const cartData = cartSnap.data();
+    const updatedItems = cartData.items.map((item) => {
+      const input = document.getElementById(`quantity-${item.productId}`);
+      const newQuantity = parseInt(input.value, 10);
+      return { ...item, quantity: newQuantity };
+    });
+
+    // Actualizar la base de datos con las nuevas cantidades
+    await updateDoc(cartRef, { items: updatedItems });
+
+    // Proceder al pago
+    const token = await user.getIdToken();
+    const items = updatedItems.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: `Producto ${item.productId}`,
+        },
+        unit_amount: 1000, // Simulado, reemplázalo con el precio real
+      },
+      quantity: item.quantity,
+    }));
+
+    const resp = await fetch(`${API_BASE_URL}/api/checkout/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ items }),
+    });
+
+    const data = await resp.json();
+    if (resp.ok) {
+      // Redirigir a la página de pago de Stripe
+      window.location.href = data.url;
+    } else {
+      cartResultDiv.textContent = "Error al iniciar el pago: " + data.error;
+    }
+  } catch (error) {
+    cartResultDiv.textContent = "Error al procesar la compra: " + error.message;
+  }
+});
+
+
+// Vaciar carrito y actualizar cantidades al comprar
+btnCheckout.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    cartResultDiv.textContent = "Debes iniciar sesión.";
+    return;
+  }
+
+  try {
+    // Actualizar las cantidades en la base de datos
+    const inputs = document.querySelectorAll(".cart-item-quantity");
+    const cartRef = doc(db, "carts", user.uid);
+    const cartSnap = await getDoc(cartRef);
+
+    if (!cartSnap.exists()) {
+      cartResultDiv.textContent = "Tu carrito está vacío.";
+      return;
+    }
+
+    const cartData = cartSnap.data();
+    const updatedItems = cartData.items.map((item) => {
+      const input = document.getElementById(`quantity-${item.productId}`);
+      const newQuantity = parseInt(input.value, 10);
+      return { ...item, quantity: newQuantity };
+    });
+
+    // Actualizar la base de datos con las nuevas cantidades
+    await updateDoc(cartRef, { items: updatedItems });
+
+    // Proceder al pago
+    const token = await user.getIdToken();
+    const items = updatedItems.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: `Producto ${item.productId}`,
+        },
+        unit_amount: 1000, // Simulado, reemplázalo con el precio real
+      },
+      quantity: item.quantity,
+    }));
+
+    const resp = await fetch(`${API_BASE_URL}/api/checkout/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ items }),
+    });
+
+    const data = await resp.json();
+    if (resp.ok) {
+      // Redirigir a la página de pago de Stripe
+      window.location.href = data.url;
+    } else {
+      cartResultDiv.textContent = "Error al iniciar el pago: " + data.error;
+    }
+  } catch (error) {
+    cartResultDiv.textContent = "Error al procesar la compra: " + error.message;
+  }
+});
+
   
   
+window.updateQuantity = updateQuantity;

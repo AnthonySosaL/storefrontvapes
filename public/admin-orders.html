@@ -2,17 +2,42 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pedidos Administrador</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="./css/admin-orders.css" rel="stylesheet">
 </head>
 <body>
   <div id="navbar"></div>
-  <h1>Gestión de Pedidos</h1>
 
-  <div id="ordersList" style="border: 1px solid #ccc; padding: 10px;">
-    Cargando pedidos...
+  <div class="orders-container">
+    <h1 class="orders-title">Gestión de Pedidos</h1>
+    <div id="ordersList">Cargando pedidos...</div>
   </div>
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel">Confirmar Acción</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de que deseas realizar esta acción?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="confirmActionButton">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
   <script type="module" src="./js/navbar.js"></script>
   <script type="module" src="./js/admin-orders.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

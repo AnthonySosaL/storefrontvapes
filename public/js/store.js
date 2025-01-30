@@ -22,97 +22,175 @@ let currentUser = null; // Declarar variable global
 const productsList = document.getElementById("productsList");
 const resultDiv = document.getElementById("result");
 const cartModal = document.getElementById("cartModal");
-const btnShowCart = document.getElementById("btnShowCart");
 const btnCloseModal = document.getElementById("btnCloseModal");
 const cartItemsDiv = document.getElementById("cartItems");
 const btnCheckout = document.getElementById("btnCheckout");
 
-btnShowCart.addEventListener("click", async () => {
-  const user = auth.currentUser;
-  if (!user) {
-    alert("Debes iniciar sesión para ver tu carrito.");
-    return;
-  }
+document.addEventListener("navbarLoaded", () => {
+  const navCartButton = document.getElementById("navCartButton");
 
-  try {
-    // Llamar a la función para cargar el carrito
-    await loadCart(user.uid);
-    cartModal.style.display = "block"; // Mostrar el modal
-  } catch (error) {
-    console.error("Error al cargar el carrito:", error.message);
+  if (navCartButton) {
+    navCartButton.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showErrorModal("Debes iniciar sesión para ver tu carrito.");
+        return;
+      }
+
+      try {
+        await loadCart(user.uid);
+        const bootstrapModal = new bootstrap.Modal(document.getElementById("cartModal"));
+        bootstrapModal.show();
+      } catch (error) {
+        console.error("Error al cargar el carrito:", error.message);
+      }
+    });
+  }
+  function showErrorModal(message) {
+    const modalBody = document.getElementById("errorModalBody");
+    const errorModalElement = document.getElementById("errorModal");
+    if (modalBody && errorModalElement) {
+      modalBody.textContent = message;
+      const errorModalInstance = new bootstrap.Modal(errorModalElement);
+      errorModalInstance.show();
+    } else {
+      console.error("El modal de error no está disponible.");
+    }
   }
 });
-
 btnCloseModal.addEventListener("click", () => {
-  cartModal.style.display = "none"; // Ocultar el modal
+  const bootstrapModal = bootstrap.Modal.getInstance(cartModal);
+  if (bootstrapModal) {
+    bootstrapModal.hide();
+  }
 });
 
 btnCheckout.addEventListener("click", () => {
   // Redirigir al carrito completo
   window.location.href = "cart.html";
 });
-
-async function loadCart(uid) {
-    try {
+async function updateCartQuantity(uid, productId, change) {
+  try {
       const cartRef = doc(db, "carts", uid);
       const cartSnap = await getDoc(cartRef);
-  
-      if (!cartSnap.exists()) {
-        cartItemsDiv.textContent = "Carrito vacío.";
-        return;
+
+      if (!cartSnap.exists()) return;
+
+      let cartData = cartSnap.data();
+      let items = cartData.items || [];
+
+      // Buscar el producto en el carrito
+      let itemIndex = items.findIndex(item => item.productId === productId);
+      if (itemIndex === -1) return;
+
+      // Obtener la nueva cantidad
+      let newQuantity = items[itemIndex].quantity + change;
+
+      if (newQuantity <= 0) {
+          // Si la cantidad es 0, eliminar el producto del carrito
+          items.splice(itemIndex, 1);
+      } else {
+          items[itemIndex].quantity = newQuantity;
       }
-  
+
+      // Guardar el carrito actualizado
+      await updateDoc(cartRef, { items });
+
+      // Recargar el carrito para mostrar los cambios
+      await loadCart(uid);
+
+  } catch (error) {
+      console.error("Error actualizando cantidad en el carrito:", error);
+  }
+}
+
+async function loadCart(uid) {
+  try {
+      const cartRef = doc(db, "carts", uid);
+      const cartSnap = await getDoc(cartRef);
+
+      if (!cartSnap.exists()) {
+          cartItemsDiv.textContent = "Carrito vacío.";
+          return;
+      }
+
       let cartData = cartSnap.data();
       if (!cartData.items || cartData.items.length === 0) {
-        cartItemsDiv.textContent = "Carrito vacío.";
-        return;
+          cartItemsDiv.textContent = "Carrito vacío.";
+          return;
       }
-  
-      // Filtrar y verificar los productos
+
       const validItems = [];
       const itemsList = await Promise.all(
-        cartData.items.map(async (item) => {
-          try {
-            const productSnap = await getDoc(doc(db, "products", item.productId));
-            if (productSnap.exists()) {
-              const productData = productSnap.data();
-              if (productData.status === "activo") {
-                validItems.push(item); // Mantener productos activos en el carrito
-                return `
-                  <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <img src="${API_BASE_URL}${productData.imagePath || '/default-product.jpg'}" alt="${productData.name}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                    <span>${productData.name} (Cantidad: ${item.quantity})</span>
-                  </div>
-                `;
-              } else {
-                console.warn(`Producto inactivo eliminado del carrito: ${item.productId}`);
-                return ""; // Producto inactivo no se mostrará
+          cartData.items.map(async (item) => {
+              try {
+                  const productSnap = await getDoc(doc(db, "products", item.productId));
+                  if (productSnap.exists()) {
+                      const productData = productSnap.data();
+                      if (productData.status === "activo") {
+                          validItems.push(item);
+
+                          return `
+                          <div class="cart-item">
+                            <img src="${API_BASE_URL}${productData.imagePath || '/default-product.jpg'}" alt="${productData.name}" class="cart-item-img">
+                            <div class="cart-item-info">
+                              <h5>${productData.name}</h5>
+                              <p>Cantidad: <span id="qty-${item.productId}">${item.quantity}</span></p>
+                              <div class="quantity-controls">
+                                <button class="btn btn-sm btn-purple decrease-btn" data-product-id="${item.productId}">-</button>
+                                <button class="btn btn-sm btn-purple increase-btn" data-product-id="${item.productId}">+</button>
+                              </div>
+                            </div>
+                          </div>
+                        `;
+
+                        
+
+                      } else {
+                          console.warn(`Producto inactivo eliminado del carrito: ${item.productId}`);
+                          return "";
+                      }
+                  } else {
+                      console.warn(`Producto desconocido eliminado del carrito: ${item.productId}`);
+                      return "";
+                  }
+              } catch (error) {
+                  console.error(`Error recuperando producto ${item.productId}:`, error);
+                  return `<div>Error al cargar producto (Cantidad: ${item.quantity})</div>`;
               }
-            } else {
-              console.warn(`Producto desconocido eliminado del carrito: ${item.productId}`);
-              return ""; // Producto inexistente no se mostrará
-            }
-          } catch (error) {
-            console.error(`Error recuperando producto ${item.productId}:`, error);
-            return `<div>Error al cargar producto (Cantidad: ${item.quantity})</div>`;
-          }
-        })
+          })
       );
-  
-      // Si se eliminó algún producto, actualizar el carrito en Firestore
+
       if (validItems.length !== cartData.items.length) {
-        await updateDoc(cartRef, { items: validItems });
+          await updateDoc(cartRef, { items: validItems });
       }
-  
+
       cartItemsDiv.innerHTML = itemsList.filter((item) => item !== "").join("");
-  
+
       if (validItems.length === 0) {
-        cartItemsDiv.textContent = "Carrito vacío.";
+          cartItemsDiv.textContent = "Carrito vacío.";
       }
-    } catch (error) {
+
+      // Agregar eventos a los botones de aumentar y disminuir cantidad
+      document.querySelectorAll(".increase-btn").forEach((button) => {
+          button.addEventListener("click", async (event) => {
+              const productId = event.target.getAttribute("data-product-id");
+              await updateCartQuantity(uid, productId, 1);
+          });
+      });
+
+      document.querySelectorAll(".decrease-btn").forEach((button) => {
+          button.addEventListener("click", async (event) => {
+              const productId = event.target.getAttribute("data-product-id");
+              await updateCartQuantity(uid, productId, -1);
+          });
+      });
+
+  } catch (error) {
       cartItemsDiv.textContent = "Error cargando carrito: " + error.message;
-    }
   }
+}
+
   
 // Escuchar cambios en la autenticación
 onAuthStateChanged(auth, (user) => {
@@ -141,65 +219,104 @@ onAuthStateChanged(auth, (user) => {
     if (cartLink) {
       cartLink.style.display = user ? "inline" : "none";
     }
-  
+    const modelLoadedEvent = new Event("modelLoaded");
+    window.dispatchEvent(modelLoadedEvent);
     loadProducts(); // Cargar productos independientemente del estado de sesión
   });
   
   
 // Función para cargar los productos
 async function loadProducts() {
-    try {
-      const snapshot = await getDocs(collection(db, "products"));
-      productsList.innerHTML = ""; // Limpia la lista
-  
-      if (snapshot.empty) {
-        productsList.textContent = "No hay productos disponibles en la tienda.";
-        return;
-      }
-  
-      snapshot.forEach((docSnap) => {
-        const prod = docSnap.data();
-  
-        // Validar si el producto está activo
-        if (prod.status !== "activo") {
-          return; // Ignorar productos inactivos
-        }
-  
-        const prodDiv = document.createElement("div");
-        prodDiv.style.border = "1px solid #ccc";
-        prodDiv.style.margin = "10px";
-        prodDiv.style.padding = "10px";
-  
-        // Verificar si el producto tiene stock
-        const isOutOfStock = prod.stock === 0;
-  
-        // Generar el contenido del producto con la imagen
-        prodDiv.innerHTML = `
-          <img src="${API_BASE_URL}${prod.imagePath || '/default-product.jpg'}" alt="${prod.name}" style="width: 100px; height: 100px; object-fit: cover;">
-          <h3>${prod.name}</h3>
-          <p>Precio: ${prod.price} | Stock: ${prod.stock}</p>
-          <input type="number" id="quantity-${docSnap.id}" value="1" min="1" max="${prod.stock}" ${!currentUser || isOutOfStock ? "disabled" : ""} />
-          <button ${!currentUser || isOutOfStock ? "disabled" : ""}>Agregar al carrito</button>
-        `;
-  
-        const btn = prodDiv.querySelector("button");
-        if (currentUser && !isOutOfStock) {
-          btn.addEventListener("click", () => {
-            const quantity = parseInt(
-              document.getElementById(`quantity-${docSnap.id}`).value
-            );
-            addToCart(docSnap.id, quantity, currentUser);
-          });
-        }
-  
-        productsList.appendChild(prodDiv);
-      });
-    } catch (error) {
-      console.error("Error cargando productos:", error.message);
-      resultDiv.textContent = "Error cargando productos: " + error.message;
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+    productsList.innerHTML = ""; // Limpia la lista
+
+    if (snapshot.empty) {
+      productsList.textContent = "No hay productos disponibles en la tienda.";
+      return;
     }
+
+    snapshot.forEach((docSnap) => {
+      const prod = docSnap.data();
+
+      // Validar si el producto está activo
+      if (prod.status !== "activo") {
+        return; // Ignorar productos inactivos
+      }
+
+      // Crear un contenedor para cada producto
+// Crear un contenedor para cada producto
+const prodDiv = document.createElement("div");
+prodDiv.classList.add("card-item"); // Clase para el diseño de las cards
+prodDiv.innerHTML = `
+  <img src="${API_BASE_URL}${prod.imagePath || '/default-product.jpg'}" alt="${prod.name}" class="card-item-img">
+  <h5 class="card-item-name">${prod.name}</h5>
+  <p class="card-item-price">Precio: $${prod.price}</p>
+  <p class="card-item-stock">Stock: ${prod.stock}</p>
+  <div class="quantity-controls">
+    <input type="number" id="quantity-${docSnap.id}" value="1" min="1" max="${prod.stock}" ${prod.stock === 0 ? "disabled" : ""}>
+    <button class="btn-quantity" data-action="decrease" ${prod.stock === 0 ? "disabled" : ""}>-</button>
+    <button class="btn-quantity" data-action="increase" ${prod.stock === 0 ? "disabled" : ""}>+</button>
+  </div>
+  <button class="btn-add-cart" ${prod.stock === 0 ? "disabled" : ""}>Agregar al carrito</button>
+`;
+
+// Lógica para los botones "+" y "-"
+const quantityInput = prodDiv.querySelector(`#quantity-${docSnap.id}`);
+const decreaseButton = prodDiv.querySelector('button[data-action="decrease"]'); // Botón "-"
+const increaseButton = prodDiv.querySelector('button[data-action="increase"]'); // Botón "+"
+
+
+// Verificar si los botones existen antes de añadir eventos
+if (decreaseButton) {
+  decreaseButton.addEventListener("click", () => {
+    const currentQuantity = parseInt(quantityInput.value, 10);
+    if (currentQuantity > 1) {
+      quantityInput.value = currentQuantity - 1;
+    }
+  });
+}
+
+if (increaseButton) {
+  increaseButton.addEventListener("click", () => {
+    const currentQuantity = parseInt(quantityInput.value, 10);
+    const maxQuantity = parseInt(quantityInput.max, 10);
+    if (currentQuantity < maxQuantity) {
+      quantityInput.value = currentQuantity + 1;
+    }
+  });
+}
+
+      
+
+      // Agregar evento al botón de agregar al carrito
+      const btn = prodDiv.querySelector(".btn-add-cart");
+      btn.addEventListener("click", () => {
+        if (!currentUser) {
+          showErrorModal("Debes iniciar sesión para agregar productos al carrito.");
+          return;
+        }
+        if (prod.stock > 0) {
+          const quantity = parseInt(
+            document.getElementById(`quantity-${docSnap.id}`).value
+          );
+          addToCart(docSnap.id, quantity, currentUser);
+        } else {
+          showErrorModal("Producto agotado.");
+        }
+      });
+
+      productsList.appendChild(prodDiv);
+    });
+  } catch (error) {
+    console.error("Error cargando productos:", error.message);
+    resultDiv.textContent = "Error cargando productos: " + error.message;
   }
-  
+}
+
+
+
+
   
   
   // Función para agregar productos al carrito
